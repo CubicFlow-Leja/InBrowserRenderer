@@ -34,8 +34,8 @@ let FragShaderText =
         '',
         'void main()',
         '{',
-        'vec4 texCol=vec4(0.4,0.3,0.6,1);',
-        'gl_FragColor=vec4(fragColor,1.0);',
+        'vec4 texCol=texture2D(MainTex,UV);',
+        'gl_FragColor=texCol*vec4(fragColor,1.0);',
         '}'
 
     ].join('\n');
@@ -245,16 +245,16 @@ function Initialization() {
 
 
     //TEXTURA 
-    // let _MainTex = gl.createTexture();
-    // gl.bindTexture(gl.TEXTURE_2D, _MainTex);
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    //gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById('img'));
+    let _MainTex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, _MainTex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, document.getElementById('img'));
 
     //unbind/release
-    // gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.bindTexture(gl.TEXTURE_2D, null);
 
 
     //da state machine zna koji je program kasnie kad addan matrice
@@ -305,8 +305,8 @@ function Initialization() {
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-        // gl.bindTexture(gl.TEXTURE_2D, _MainTex);
-        // gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, _MainTex);
+        gl.activeTexture(gl.TEXTURE0);
 
         //gl.drawArrays(gl.TRIANGLES,0,3); //za array
         gl.drawElements(gl.TRIANGLES, Indices.length, gl.UNSIGNED_SHORT, 0);//za trokute
