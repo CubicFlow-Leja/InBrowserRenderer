@@ -35,6 +35,7 @@ let FragShaderText =
         'void main()',
         '{',
         'vec4 texCol=texture2D(MainTex,UV);',
+        'if(texCol.r+texCol.g+texCol.b<2.0) discard;',
         'gl_FragColor=texCol*vec4(fragColor,1.0);',
         '}'
 
@@ -72,9 +73,9 @@ function Initialization() {
 
     //culling i depth
     gl.enable(gl.DEPTH_TEST);
-    gl.enable(gl.CULL_FACE);
+    //gl.enable(gl.CULL_FACE);
     gl.frontFace(gl.CCW);
-    gl.cullFace(gl.BACK);
+    //  gl.cullFace(gl.BACK);
 
 
     //shaderi
