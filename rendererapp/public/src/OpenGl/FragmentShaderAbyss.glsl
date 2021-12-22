@@ -192,7 +192,7 @@ float ShadowCasterPass(RayMarchData Data,float Steps,vec3 LightPos)
     float k=15.5;
     float Res=1.0;
 
-    for (int i = 0; i <1000; i++) 
+    for (int i = 0; i <1200; i++) 
     {
         p=pos+Dir*t;
         d=SDFMAIN(p).w;
@@ -227,7 +227,7 @@ ReturnData ReflectionPass(RayMarchData Data,float Steps,vec3 LightPos)
     RetData.Color=vec4(0.0,0.0,0.0,1.0);
 
 
-    for (int i = 0; i <1000; i++)
+    for (int i = 0; i <1200; i++)
     {
         if(float(i)>=a)
             break;
@@ -296,7 +296,7 @@ ReturnData SphereMarch(RayMarchData Data,float Steps)
                         0,
                         255.0*sin(Time*0.45));
   //  LightPos=CameraPosition;
-    for (int i = 0; i <1000; i++)
+    for (int i = 0; i <1200; i++)
     {
         p=pos+Dir*t;
         d=SDFMAIN(p);
