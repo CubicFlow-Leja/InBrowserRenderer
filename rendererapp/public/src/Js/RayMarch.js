@@ -1,5 +1,12 @@
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
+let url = window.location;
+
+let fragUrl = '../src/OpenGl/FragmentShaderAbyss.glsl';
+let VertUrl = '../src/OpenGl/VS.glsl';
+
+
+
 class Vector2 {
     constructor(X, Y) {
         this.X = X;
@@ -387,13 +394,13 @@ function Initialization(VertText, FragText) {
 
 
 var InitAsyncRequest = function () {
-    loadTextResource('../OpenGl/VertexShaderRaymarch.glsl', function (verError, vText) {
+    loadTextResource(VertUrl, function (verError, vText) {
         if (verError) {
             alert('Fatal Error While Loading Vert Shader');
             console.error(verError);
         }
         else {
-            loadTextResource('../OpenGl/FragmentShaderAbyss.glsl', function (fragError, fText) {
+            loadTextResource(fragUrl, function (fragError, fText) {
                 if (fragError) {
                     alert('Fatal Error While Loading Vert SHader');
                     console.error(fragError);
