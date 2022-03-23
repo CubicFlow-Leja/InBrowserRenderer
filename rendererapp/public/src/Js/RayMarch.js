@@ -5,18 +5,14 @@ let url = window.location;
 let fragUrl = '../src/OpenGl/FragmentShaderAbyss.glsl';
 let VertUrl = '../src/OpenGl/VS.glsl';
 
-
-
 class Vector2 {
     constructor(X, Y) {
         this.X = X;
         this.Y = Y;
     }
-
     ComputeChange(NewPos) {
         return new Vector2(NewPos.X - this.X, NewPos.Y - this.Y);
     }
-
     Reset() {
         this.X = 0;
         this.Y = 0;
@@ -77,23 +73,18 @@ class InputAxis {
         this.Gravity = AxisGravity;
         this.TargetVal = 0;
     }
-
     Gravitate(dt) {
         this.value += (this.TargetVal - this.value) * dt * this.Gravity;
     }
 }
 
-
 let mWorldMat;
 let Xrot;
 let Yrot;
 
-
-
 let XAxis = new InputAxis(0, 8.0);
 let YAxis = new InputAxis(0, 8.0);
 let ZAxis = new InputAxis(0, 8.0);
-
 
 let OldPos = new Vector2(0, 0);
 let Dir = new Vector2(0, 0);
@@ -106,7 +97,6 @@ let VirtualCameraPos = new Vector3(0, 0, 0);
 let RDirection = new Vector3(1, 0, 0);
 let UpDirection = new Vector3(0, 1, 0);
 let FwDirection = new Vector3(0, 0, 1);
-
 
 let Angle = new Vector3(0, 0, 0);
 
@@ -130,25 +120,17 @@ function HandlePositionsAndCoordinateSystem() {
     fw = FwDirection.ReturnVectorFormat();
     up = UpDirection.ReturnVectorFormat();
 
-
-
     let WorldRotQuat = [0, 0, 0, 1];
 
-
     glMatrix.mat4.rotate(Yrot, Yrot, Angle.y, [0, 1, 0]);
-
     glMatrix.vec3.transformMat4(right, [1, 0, 0], Yrot);
     glMatrix.mat4.rotate(Xrot, Xrot, Angle.x, right);
 
     mWorldMat = glMatrix.mat4.mul(mWorldMat, Xrot, Yrot);
 
     glMatrix.mat4.getRotation(WorldRotQuat, mWorldMat);
-
-
     glMatrix.vec3.transformQuat(up, [0, 1, 0], WorldRotQuat);
     glMatrix.vec3.transformQuat(right, [1, 0, 0], WorldRotQuat);
-
-    //glMatrix.vec3.cross(fw,up,right);
     glMatrix.vec3.transformQuat(fw, [0, 0, 1], WorldRotQuat);
 
     RDirection.SetFromVecFormat(right);
@@ -193,31 +175,28 @@ function Initialization(VertText, FragText) {
     if (!gl)
         alert('Browser does not support WebGl');
 
-    //dimenzije
+    //dimensions
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     gl.viewport(0, 0, window.innerWidth, window.innerHeight);
     //defaults
     gl.clearColor(1, 1, 1, 1);
 
-    //clearing
+    //clear
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    //culling i depth
+    //culling and depth
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.CULL_FACE);
     gl.frontFace(gl.CCW);
     gl.cullFace(gl.BACK);
 
 
-    //shaderi
+    //shaders
     let vertexShader = gl.createShader(gl.VERTEX_SHADER);
     let fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 
-
-
-
-    //setanje koda
+    //setting the shader code
     gl.shaderSource(vertexShader, VertText);
     gl.shaderSource(fragmentShader, FragText);
 
@@ -225,7 +204,7 @@ function Initialization(VertText, FragText) {
     gl.compileShader(vertexShader);
     gl.compileShader(fragmentShader);
 
-    //validiranje
+    //validate
     if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
         console.error("invalid vert shader");
         return;
@@ -235,44 +214,37 @@ function Initialization(VertText, FragText) {
         return;
     }
 
-    //setupanje pipeline-a
+    //setup pipeline
     let program = gl.createProgram();
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
 
-    //validiranje link-ing stage-a
+    //validate linking stage
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
         console.error('Error Linking Program')
         return;
     }
 
-    //finalna debug only validacija, sporo af , makni iz builda
+    //final validate
     gl.validateProgram(program);
     if (!gl.getProgramParameter(program, gl.VALIDATE_STATUS)) {
         console.error('Error validating program');
         return;
     }
 
-
-    /////
-    /////
-    /////
-    /////
-
-    //create-anje buffera
+    //vertex buffer data
     let VerticesData =
-        [//   X     Y       MatInd
+        [//  X   Y   MatInd
             -1.0, -1.0, 0,
             1.0, -1.0, 1,
             1.0, 1.0, 2,
             -1.0, 1.0, 3
         ];
 
+    //triangle buffer data
     let Indices = [0, 1, 2,
         0, 2, 3,];
-
-
 
     //Vertex buffer
     let triangleVertexBuffer = gl.createBuffer();
@@ -283,7 +255,6 @@ function Initialization(VertText, FragText) {
     let IndicesBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, IndicesBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(Indices), gl.STATIC_DRAW);
-
 
     let positionAttribLocation = gl.getAttribLocation(program, 'vertPosition');
     let IndexAttribLocation = gl.getAttribLocation(program, 'MatrixIndex');
@@ -313,37 +284,26 @@ function Initialization(VertText, FragText) {
 
     gl.useProgram(program);
 
-    //
-    //
-    //
-
-
     let CamFov = Math.PI / 3;
     let CamAspect = canvas.width / canvas.height;
     let fov = Math.tan(CamFov * 0.5);
-    // console.log(fov);
     let x = CamAspect * fov;//right
     let y = fov;//up
 
-    let Frustum = [-x, -y, 1, 0,
+    let Frustum = [
+        -x, -y, 1, 0,
         x, -y, 1, 0,
         x, y, 1, 0,
-    -x, y, 1, 0];
+        -x, y, 1, 0
+    ];
 
     let FrustumLocation = gl.getUniformLocation(program, 'CamFrustum');
     gl.uniformMatrix4fv(FrustumLocation, gl.FALSE, Frustum);
 
-
-
-    //world mat4 kasnie jer mi zasad ne triba cam controll
     let WorldMatLoc = gl.getUniformLocation(program, 'mWorld');
     mWorldMat = new Float32Array(16);
     glMatrix.mat4.identity(mWorldMat);
     gl.uniformMatrix4fv(WorldMatLoc, gl.FALSE, mWorldMat);
-
-
-
-    //main render loop
 
     Xrot = new Float32Array(16);
     glMatrix.mat4.identity(Xrot);
@@ -364,11 +324,10 @@ function Initialization(VertText, FragText) {
 
     let RenderLoop = function () {
         steps = document.getElementById('Steps').value;
-
         Time = performance.now() / 1000;
         gl.uniform1f(TimeLocation, Time);
-
         gl.uniform1f(StepsLoc, steps);
+
         //Fps=Math.round( 1/DeltaTime);
         // if(Fps>=60)
         //     Fps='Above '+ 60;
@@ -380,11 +339,9 @@ function Initialization(VertText, FragText) {
 
         gl.uniformMatrix4fv(WorldMatLoc, gl.FALSE, mWorldMat);
         gl.uniform3f(PositionLocation, VirtualCameraPos.x, VirtualCameraPos.y, VirtualCameraPos.z);
-
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.drawElements(gl.TRIANGLES, Indices.length, gl.UNSIGNED_SHORT, 0);
         requestAnimationFrame(RenderLoop);
-
     };
     requestAnimationFrame(RenderLoop);
 
@@ -430,7 +387,6 @@ function handleMouseMove(event) {
     }
     else
         Dir.Reset();
-
     OldPos = NewPos;
 }
 
@@ -446,11 +402,8 @@ function OnRelease() {
 }
 
 
-
-
 let KeyTempDown;
 document.addEventListener('keydown', function (event) {
-
     KeyTempDown = event.key;
 
     if (KeyTempDown == 'a' && XAxis.TargetVal != 1)

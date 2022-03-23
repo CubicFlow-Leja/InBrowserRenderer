@@ -51,7 +51,6 @@ class particle {
     }
 }
 
-
 function createCanvas(Xres, Yres) {
     canvas = document.createElement('canvas');
     canvas.id = "CursorLayer";
@@ -65,8 +64,6 @@ function createCanvas(Xres, Yres) {
     context = canvas.getContext('2d');
     centerX = canvas.width / 2;
     centerY = canvas.height / 2;
-
-
 }
 
 function setup() {
